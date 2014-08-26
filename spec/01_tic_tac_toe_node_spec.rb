@@ -61,7 +61,7 @@ describe TicTacToeNode do
       expect(empty_board_node.losing_node?(:x)).to be_true
     end
 
-    let(:loser) do
+    let(:all_x_losers) do
       node = TicTacToeNode.new(Board.new, :x)
       node.board[[0,0]] = :o
       node.board[[2,2]] = :o
@@ -71,25 +71,25 @@ describe TicTacToeNode do
 
     context "when it's the player's turn" do
       it "detects when every child is a loser" do
-        expect(loser.losing_node?(:x)).to be_true
+        expect(all_x_losers.losing_node?(:x)).to be_true
       end
+    end
+
+    let(:one_x_loser) do
+      node = TicTacToeNode.new(Board.new, :o)
+      node.board[[0,0]] = :o
+      node.board[[0,2]] = :o
+      node
     end
 
     context "when it's the opponent's turn" do
       it "detects when any child is a loser" do
-        expect(loser.losing_node?(:o)).to be_false
+        expect(one_x_loser.losing_node?(:x)).to be_true
       end
     end
   end
 
   describe "#winning_node?" do
-    let(:winner) do
-      node = TicTacToeNode.new(Board.new, :x)
-      node.board[[0,0]] = :x
-      node.board[[2,2]] = :x
-      node.board[[0,2]] = :x
-      node
-    end
 
     let(:won_node) do
       node = TicTacToeNode.new(Board.new, :x)
@@ -104,15 +104,31 @@ describe TicTacToeNode do
       expect(won_node.winning_node?(:x)).to be_true
     end
 
+    let(:one_x_winner) do
+      node = TicTacToeNode.new(Board.new, :x)
+      node.board[[0,0]] = :x
+      node.board[[0,2]] = :x
+      node
+    end
+
     context "when it's the player's turn" do
       it "detects when any child is a winner" do
-        expect(winner.winning_node?(:x)).to be_true
+        expect(one_x_winner.winning_node?(:x)).to be_true
       end
+    end
+
+    let(:all_x_winners) do
+      node = TicTacToeNode.new(Board.new, :o)
+      node.board[[0,0]] = :x
+      node.board[[2,2]] = :x
+      node.board[[0,2]] = :x
+      node
     end
 
     context "when it's the opponent's turn" do
       it "detects when every child is a winner" do
-        expect(winner.winning_node?(:o)).to be_false
+        expect(all_x_winners.winning_node?(:x)).to be_true
+        expect(all_x_winners.winning_node?(:o)).to be_false
       end
     end
   end
